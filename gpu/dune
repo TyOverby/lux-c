@@ -18,12 +18,6 @@
    -lnvrtc)))
 
 (rule
- (alias run)
- (deps main.exe kernel.cu)
- (action
-  (run ./main.exe kernel.cu)))
-
-(rule
  (alias lint-kernel)
  (deps
   kernel.cu
