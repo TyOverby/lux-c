@@ -1,8 +1,6 @@
 (rule
  (alias lint)
- (deps
-  cuda_helpers.c
-  cuda_helpers.h)
+ (deps cuda_helpers.c cuda_helpers.h)
  (action
   (run
    clang-20

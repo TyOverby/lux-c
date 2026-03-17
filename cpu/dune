@@ -9,7 +9,16 @@
   lux_cpu.h
   (glob_files ../utilities/stb/*.h))
  (action
-  (run clang-20 -O2 -DSTB_IMAGE_WRITE_IMPLEMENTATION -I../utilities/stb -o %{targets} main.c lux_cpu.c ../shared/lux_priv.c)))
+  (run
+   clang-20
+   -O2
+   -DSTB_IMAGE_WRITE_IMPLEMENTATION
+   -I../utilities/stb
+   -o
+   %{targets}
+   main.c
+   lux_cpu.c
+   ../shared/lux_priv.c)))
 
 (rule
  (alias lint)
@@ -26,6 +35,9 @@
    -fsyntax-only
    -I../utilities/stb
    -Weverything
+   -Wextra
+   -Wgcc-compat
+   -Wmissing-field-initializers
    -Wno-c++98-compat
    -Wno-c++98-compat-pedantic
    -Wno-unknown-cuda-version

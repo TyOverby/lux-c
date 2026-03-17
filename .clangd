@@ -10,3 +10,5 @@ CompileFlags:
         - -Wno-unsafe-buffer-usage
         - -Wno-declaration-after-statement
         - -Werror
+        - -Wextra
+        - -Wgcc-compat

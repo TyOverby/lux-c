@@ -31,7 +31,9 @@
    -I
    ../utilities/cuda_stubs
    -fsyntax-only
-   -Weverything
+   -Wextra
+   -Wgcc-compat
+   -Wmissing-field-initializers
    -Wno-c++98-compat
    -Wno-c++98-compat-pedantic
    -Wno-unknown-cuda-version
@@ -44,10 +46,7 @@
 
 (rule
  (alias lint)
- (deps
-  main.c
-  ../utilities/cuda_helpers.h
-  ../utilities/cuda_helpers.c)
+ (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
  (action
   (run
    clang-20

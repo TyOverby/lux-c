@@ -1,13 +1,13 @@
 (rule
  (alias lint)
- (deps
-  lux_priv.c
-  lux.h
-  lux_priv.h)
+ (deps lux_priv.c lux.h lux_priv.h)
  (action
   (run
    clang-20
    -fsyntax-only
+   -Wextra
+   -Wgcc-compat
+   -Wmissing-field-initializers
    -Weverything
    -Wno-c++98-compat
    -Wno-c++98-compat-pedantic
