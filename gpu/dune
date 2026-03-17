@@ -1,6 +1,6 @@
 (rule
  (targets main.exe)
- (deps main.c ../shared/cuda_helpers.h ../shared/cuda_helpers.c)
+ (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
  (action
   (run
    gcc
@@ -13,7 +13,7 @@
    -o
    %{targets}
    main.c
-   ../shared/cuda_helpers.c
+   ../utilities/cuda_helpers.c
    -lcuda
    -lnvrtc)))
 
@@ -27,7 +27,7 @@
  (alias lint)
  (deps
   kernel.cu
-  (glob_files ../shared/cuda_stubs/*))
+  (glob_files ../utilities/cuda_stubs/*))
  (action
   (run
    clang-20
@@ -35,7 +35,7 @@
    --cuda-gpu-arch=sm_89
    --cuda-path=/usr/local/cuda
    -I
-   ../shared/cuda_stubs
+   ../utilities/cuda_stubs
    -fsyntax-only
    -Weverything
    -Wno-c++98-compat

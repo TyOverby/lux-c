@@ -8,11 +8,12 @@ A GPU-accelerated 2D rendering library with both CPU and GPU backends.
 shared/
 ├── lux.h               — public API (scenes, instructions, dispatch)
 ├── lux_priv.h           — private types (vtable, instruction buffer internals)
-├── lux_priv.c           — shared implementation (instruction buffer, dispatch)
+└── lux_priv.c           — shared implementation (instruction buffer, dispatch)
+utilities/
 ├── cuda_helpers.h       — CUDA init, NVRTC compilation, cleanup
 ├── cuda_helpers.c
-└── cuda_stubs/          — stubs for clang-based CUDA linting
-stb/                     — vendored stb single-header image libraries
+├── cuda_stubs/          — stubs for clang-based CUDA linting
+└── stb/                 — vendored stb single-header image libraries
 cpu/
 ├── main.c               — CPU backend demo
 ├── lux_cpu.c            — CPU backend implementation

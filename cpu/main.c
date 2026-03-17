@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "../stb/stb_image_write.h"
+#include "../utilities/stb/stb_image_write.h"
 #include "../shared/lux.h"
 #include "lux_cpu.h"
 

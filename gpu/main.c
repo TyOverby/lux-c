@@ -1,4 +1,4 @@
-#include "../shared/cuda_helpers.h"
+#include "../utilities/cuda_helpers.h"
 
 int main(int argc, char** argv) {
   if (argc != 2) {
