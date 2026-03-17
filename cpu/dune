@@ -10,7 +10,7 @@
   (glob_files ../utilities/stb/*.h))
  (action
   (run
-   clang-20
+   clang
    -O2
    -DSTB_IMAGE_WRITE_IMPLEMENTATION
    -I../utilities/stb
@@ -31,7 +31,7 @@
   (glob_files ../utilities/stb/*.h))
  (action
   (run
-   clang-20
+   clang
    -fsyntax-only
    -I../utilities/stb
    -Weverything

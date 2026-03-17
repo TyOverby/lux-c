@@ -3,7 +3,7 @@
  (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
  (action
   (run
-   clang-20
+   clang
    -O2
    -I
    /usr/local/cuda/include
@@ -24,7 +24,7 @@
   (glob_files ../utilities/cuda_stubs/*))
  (action
   (run
-   clang-20
+   clang
    --cuda-device-only
    --cuda-gpu-arch=sm_89
    --cuda-path=/usr/local/cuda
@@ -49,7 +49,7 @@
  (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
  (action
   (run
-   clang-20
+   clang
    -fsyntax-only
    -isystem/usr/local/cuda/include
    -Weverything
