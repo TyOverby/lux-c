@@ -9,10 +9,36 @@
   lux_cpu.h
   (glob_files ../utilities/stb/*.h))
  (action
-  (run gcc -O2 -DSTB_IMAGE_WRITE_IMPLEMENTATION -I../utilities/stb -o %{targets} main.c lux_cpu.c ../shared/lux_priv.c)))
+  (run clang-20 -O2 -DSTB_IMAGE_WRITE_IMPLEMENTATION -I../utilities/stb -o %{targets} main.c lux_cpu.c ../shared/lux_priv.c)))
 
 (rule
  (alias run)
  (deps main.exe)
  (action
   (run ./main.exe)))
+
+(rule
+ (alias lint)
+ (deps
+  main.c
+  lux_cpu.c
+  lux_cpu.h
+  ../shared/lux.h
+  ../shared/lux_priv.h
+  (glob_files ../utilities/stb/*.h))
+ (action
+  (run
+   clang-20
+   -fsyntax-only
+   -I../utilities/stb
+   -Weverything
+   -Wno-c++98-compat
+   -Wno-c++98-compat-pedantic
+   -Wno-unknown-cuda-version
+   -Wno-missing-prototypes
+   -Wno-old-style-cast
+   -Wno-unsafe-buffer-usage
+   -Wno-declaration-after-statement
+   -Werror
+   main.c
+   lux_cpu.c)))

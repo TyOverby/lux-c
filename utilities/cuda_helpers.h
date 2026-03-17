@@ -7,10 +7,11 @@
 #include <stdlib.h>
 
 typedef struct {
-  CUdevice device;
   CUcontext ctx;
+  CUdevice device;
   int major;
   int minor;
+  int _padding;
 } cuda_state;
 
 char* read_file(const char* path);

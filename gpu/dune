@@ -3,7 +3,7 @@
  (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
  (action
   (run
-   gcc
+   clang-20
    -O2
    -I
    /usr/local/cuda/include
@@ -24,7 +24,7 @@
   (run ./main.exe kernel.cu)))
 
 (rule
- (alias lint)
+ (alias lint-kernel)
  (deps
   kernel.cu
   (glob_files ../utilities/cuda_stubs/*))
@@ -47,3 +47,25 @@
    -Wno-unsafe-buffer-usage
    -Werror
    kernel.cu)))
+
+(rule
+ (alias lint)
+ (deps
+  main.c
+  ../utilities/cuda_helpers.h
+  ../utilities/cuda_helpers.c)
+ (action
+  (run
+   clang-20
+   -fsyntax-only
+   -isystem/usr/local/cuda/include
+   -Weverything
+   -Wno-c++98-compat
+   -Wno-c++98-compat-pedantic
+   -Wno-unknown-cuda-version
+   -Wno-missing-prototypes
+   -Wno-old-style-cast
+   -Wno-unsafe-buffer-usage
+   -Wno-declaration-after-statement
+   -Werror
+   main.c)))

@@ -8,8 +8,8 @@ char* read_file(const char* path) {
   fseek(f, 0, SEEK_END);
   long len = ftell(f);
   fseek(f, 0, SEEK_SET);
-  char* buf = malloc(len + 1);
-  size_t n = fread(buf, 1, len, f);
+  char* buf = malloc((size_t)len + 1);
+  size_t n = fread(buf, 1, (size_t)len, f);
   buf[n] = '\0';
   fclose(f);
   return buf;

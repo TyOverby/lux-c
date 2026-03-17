@@ -1,0 +1,20 @@
+(rule
+ (alias lint)
+ (deps
+  lux_priv.c
+  lux.h
+  lux_priv.h)
+ (action
+  (run
+   clang-20
+   -fsyntax-only
+   -Weverything
+   -Wno-c++98-compat
+   -Wno-c++98-compat-pedantic
+   -Wno-unknown-cuda-version
+   -Wno-missing-prototypes
+   -Wno-old-style-cast
+   -Wno-unsafe-buffer-usage
+   -Wno-declaration-after-statement
+   -Werror
+   lux_priv.c)))
