@@ -14,4 +14,7 @@ int main(void) {
   lux_color* output = malloc(width * height * sizeof(lux_color));
   lux_dispatch(scene, (lux_dispatch_args){.dx = 0, .dy = 0, .width = width, .height = height}, output);
   stbi_write_png("output.png", (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+
+  free(output);
+  lux_free_scene(scene);
 }
