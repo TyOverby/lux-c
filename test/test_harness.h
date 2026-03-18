@@ -27,7 +27,9 @@ static void generate_dune_targets(const test_case* tests, int count) {
       break;
     }
   }
-  if (!has_image_tests) return;
+  if (!has_image_tests) {
+    return;
+  }
 
   printf(
       "(rule\n"
@@ -72,25 +74,25 @@ static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t
     lux_dispatch(scene, (lux_dispatch_args){.dx = 0, .dy = 0, .width = width, .height = height}, output);
 
     switch (tests[i].type) {
-    case TEST_IMAGE:
-      if (write_images) {
-        char filename[256];
-        snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
-        stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
-      }
-      break;
-    case TEST_FULLY_TRANSPARENT: {
-      lux_color zero = {0, 0, 0, 0};
-      for (uint32_t j = 0; j < width * height; j++) {
-        if (memcmp(&output[j], &zero, sizeof(lux_color)) != 0) {
-          fprintf(stderr, "FAIL: %s — pixel %u is (%u,%u,%u,%u), expected (0,0,0,0)\n", tests[i].name, j,
-                  output[j].r, output[j].g, output[j].b, output[j].a);
-          failures++;
-          break;
+      case TEST_IMAGE:
+        if (write_images) {
+          char filename[256];
+          snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
+          stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
         }
+        break;
+      case TEST_FULLY_TRANSPARENT: {
+        lux_color zero = {0, 0, 0, 0};
+        for (uint32_t j = 0; j < width * height; j++) {
+          if (memcmp(&output[j], &zero, sizeof(lux_color)) != 0) {
+            fprintf(stderr, "FAIL: %s — pixel %u is (%u,%u,%u,%u), expected (0,0,0,0)\n", tests[i].name, j, output[j].r,
+                    output[j].g, output[j].b, output[j].a);
+            failures++;
+            break;
+          }
+        }
+        break;
       }
-      break;
-    }
     }
 
     free(output);

@@ -3,6 +3,7 @@
 -Weverything
 -Wno-c++98-compat
 -Wno-c++98-compat-pedantic
+-Wno-padded
 -Wno-unknown-cuda-version
 -Wno-missing-prototypes
 -Wno-old-style-cast
