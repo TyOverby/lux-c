@@ -1,7 +1,7 @@
 #include <stdlib.h>
-#include "../utilities/stb/stb_image_write.h"
-#include "../shared/lux.h"
-#include "lux_cpu.h"
+#include "../../utilities/stb/stb_image_write.h"
+#include "../../shared/lux.h"
+#include "../../cpu/lux_cpu.h"
 
 int main(void) {
   lux_scene* scene = lux_cpu_create_scene();

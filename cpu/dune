@@ -1,29 +1,6 @@
 (rule
- (targets main.exe)
- (deps
-  main.c
-  lux_cpu.c
-  ../shared/lux_priv.c
-  ../shared/lux.h
-  ../shared/lux_priv.h
-  lux_cpu.h
-  (glob_files ../utilities/stb/*.h))
- (action
-  (run
-   clang
-   -O2
-   -DSTB_IMAGE_WRITE_IMPLEMENTATION
-   -I../utilities/stb
-   -o
-   %{targets}
-   main.c
-   lux_cpu.c
-   ../shared/lux_priv.c)))
-
-(rule
  (alias lint)
  (deps
-  main.c
   lux_cpu.c
   lux_cpu.h
   ../shared/lux.h
@@ -46,5 +23,4 @@
    -Wno-unsafe-buffer-usage
    -Wno-declaration-after-statement
    -Werror
-   main.c
    lux_cpu.c)))

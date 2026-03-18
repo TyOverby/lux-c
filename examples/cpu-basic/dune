@@ -1,0 +1,50 @@
+(rule
+ (targets main.exe)
+ (deps
+  main.c
+  ../../cpu/lux_cpu.c
+  ../../shared/lux_priv.c
+  ../../shared/lux.h
+  ../../shared/lux_priv.h
+  ../../cpu/lux_cpu.h
+  (glob_files ../../utilities/stb/*.h))
+ (action
+  (run
+   clang
+   -O2
+   -DSTB_IMAGE_WRITE_IMPLEMENTATION
+   -I../../utilities/stb
+   -o
+   %{targets}
+   main.c
+   ../../cpu/lux_cpu.c
+   ../../shared/lux_priv.c)))
+
+(rule
+ (alias lint)
+ (deps
+  main.c
+  ../../cpu/lux_cpu.c
+  ../../cpu/lux_cpu.h
+  ../../shared/lux.h
+  ../../shared/lux_priv.h
+  (glob_files ../../utilities/stb/*.h))
+ (action
+  (run
+   clang
+   -fsyntax-only
+   -I../../utilities/stb
+   -Weverything
+   -Wextra
+   -Wgcc-compat
+   -Wmissing-field-initializers
+   -Wno-c++98-compat
+   -Wno-c++98-compat-pedantic
+   -Wno-unknown-cuda-version
+   -Wno-missing-prototypes
+   -Wno-old-style-cast
+   -Wno-unsafe-buffer-usage
+   -Wno-declaration-after-statement
+   -Werror
+   main.c
+   ../../cpu/lux_cpu.c)))

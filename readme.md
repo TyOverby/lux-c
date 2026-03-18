@@ -15,10 +15,13 @@ utilities/
 ├── cuda_stubs/          — stubs for clang-based CUDA linting
 └── stb/                 — vendored stb single-header image libraries
 cpu/
-├── main.c               — CPU backend demo
 ├── lux_cpu.c            — CPU backend implementation
 ├── lux_cpu.h
 └── dune
+examples/
+└── cpu-basic/
+    ├── main.c           — CPU backend demo
+    └── dune
 gpu/
 ├── main.c               — GPU backend demo
 ├── kernel.cu            — GPU kernel (compiled at runtime via NVRTC)
@@ -52,6 +55,6 @@ dune build @cpu/run
 dune build @gpu/run
 
 # build a specific target
-dune build cpu/main.exe
+dune build examples/cpu-basic/main.exe
 dune build gpu/main.exe
 ```
