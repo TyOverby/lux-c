@@ -17,21 +17,25 @@ typedef struct lux_scene {
 
 typedef enum { NoOp, Pixel, Rect } lux_instruction_kind;
 
+typedef struct {
+  uint8_t for_alignment;
+} lux_instr_noop;
+
+typedef struct {
+  int32_t x, y;
+  lux_color color;
+} lux_instr_pixel;
+
+typedef struct {
+  int32_t x, y;
+  uint32_t w, h;
+  lux_color color;
+} lux_instr_rect;
+
 typedef union {
-  struct NoOp {
-    uint8_t for_alignment;
-  } NoOp;
-
-  struct Pixel {
-    int32_t x, y;
-    lux_color color;
-  } Pixel;
-
-  struct Rect {
-    int32_t x, y;
-    uint32_t w, h;
-    lux_color color;
-  } Rect;
+  lux_instr_noop NoOp;
+  lux_instr_pixel Pixel;
+  lux_instr_rect Rect;
 } lux_instruction_data;
 
 typedef struct {

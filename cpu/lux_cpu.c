@@ -70,6 +70,22 @@ static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width,
   }
 }
 
+static void draw_pixel(lux_instr_pixel instr, lux_dispatch_args args, lux_color* output) {
+  int32_t x = instr.x - args.dx;
+  int32_t y = instr.y - args.dy;
+  write_pixel(output, x, y, args.width, instr.color);
+}
+
+static void draw_rect(lux_instr_rect instr, lux_dispatch_args args, lux_color* output) {
+  int32_t x = instr.x - args.dx;
+  int32_t y = instr.y - args.dy;
+  for (int32_t dy = 0; dy < (int32_t)instr.h; dy++) {
+    for (int32_t dx = 0; dx < (int32_t)instr.w; dx++) {
+      write_pixel(output, x + dx, y + dy, args.width, instr.color);
+    }
+  }
+}
+
 static void dispatch(lux_scene* scene, lux_dispatch_args args, lux_color* output) {
   lux_cpu_scene* cpu_scene = scene->data;
   lux_instruction_buffer* buffer = cpu_scene->buffer;
@@ -86,26 +102,12 @@ static void dispatch(lux_scene* scene, lux_dispatch_args args, lux_color* output
     switch (instr.kind) {
       case NoOp:
         break;
-      case Pixel: {
-        int32_t x = instr.data.Pixel.x - args.dx;
-        int32_t y = instr.data.Pixel.y - args.dy;
-        lux_color color = instr.data.Pixel.color;
-        write_pixel(output, x, y, args.width, color);
+      case Pixel:
+        draw_pixel(instr.data.Pixel, args, output);
         break;
-      }
-      case Rect: {
-        int32_t x = instr.data.Rect.x - args.dx;
-        int32_t y = instr.data.Rect.y - args.dy;
-        uint32_t width = instr.data.Rect.w;
-        uint32_t height = instr.data.Rect.h;
-        lux_color color = instr.data.Rect.color;
-        for (int32_t dy = 0; dy < (int32_t)height; dy++) {
-          for (int32_t dx = 0; dx < (int32_t)width; dx++) {
-            write_pixel(output, x + dx, y + dy, args.width, color);
-          }
-        }
+      case Rect:
+        draw_rect(instr.data.Rect, args, output);
         break;
-      }
     }
   }
 }
