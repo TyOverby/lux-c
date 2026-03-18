@@ -28,23 +28,13 @@
   ../../cpu/lux_cpu.h
   ../../shared/lux.h
   ../../shared/lux_priv.h
+  ../../compile_flags.txt
   (glob_files ../../utilities/stb/*.h))
  (action
   (run
    clang
    -fsyntax-only
    -I../../utilities/stb
-   -Weverything
-   -Wextra
-   -Wgcc-compat
-   -Wmissing-field-initializers
-   -Wno-c++98-compat
-   -Wno-c++98-compat-pedantic
-   -Wno-unknown-cuda-version
-   -Wno-missing-prototypes
-   -Wno-old-style-cast
-   -Wno-unsafe-buffer-usage
-   -Wno-declaration-after-statement
-   -Werror
+   %{read-lines:../../compile_flags.txt}
    main.c
    ../../cpu/lux_cpu.c)))

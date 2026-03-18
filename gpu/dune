@@ -46,19 +46,10 @@
 
 (rule
  (alias lint)
- (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c)
+ (deps main.c ../utilities/cuda_helpers.h ../utilities/cuda_helpers.c ../compile_flags.txt)
  (action
   (run
    clang
    -fsyntax-only
-   -isystem/usr/local/cuda/include
-   -Weverything
-   -Wno-c++98-compat
-   -Wno-c++98-compat-pedantic
-   -Wno-unknown-cuda-version
-   -Wno-missing-prototypes
-   -Wno-old-style-cast
-   -Wno-unsafe-buffer-usage
-   -Wno-declaration-after-statement
-   -Werror
+   %{read-lines:../compile_flags.txt}
    main.c)))
