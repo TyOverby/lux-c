@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 #include <stdlib.h>
 #include "lux.h"
@@ -11,11 +12,16 @@ typedef struct lux_scene {
   void* data;
   lux_instruction_buffer* (*get_instruction_buffer)(lux_scene*);
   void (*dispatch)(lux_scene*, lux_dispatch_args, lux_color*);
+  void (*free)(lux_scene*);
 } lux_scene;
 
-typedef enum { Pixel, Rect } lux_instruction_kind;
+typedef enum { NoOp, Pixel, Rect } lux_instruction_kind;
 
 typedef union {
+  struct NoOp {
+    uint8_t for_alignment;
+  } NoOp;
+
   struct Pixel {
     int32_t x;
     int32_t y;
@@ -44,7 +50,7 @@ typedef struct lux_instruction_buffer {
 } lux_instruction_buffer;
 
 // Allocate and return a new instruction buffer with the given capacity.
-lux_instruction_buffer lux_priv_create_instruction_buffer(size_t);
+lux_instruction_buffer* lux_priv_create_instruction_buffer(size_t);
 
 // Free the given instruction buffer.
-void lux_priv_destroy_instruction_buffer(lux_instruction_buffer*);
+void lux_priv_free_instruction_buffer(lux_instruction_buffer*);

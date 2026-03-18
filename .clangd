@@ -1,14 +1,16 @@
 CompileFlags:
-    Add:
-        - -I/usr/local/cuda/include
-        - -Weverything
-        - -Wno-c++98-compat
-        - -Wno-c++98-compat-pedantic
-        - -Wno-unknown-cuda-version
-        - -Wno-missing-prototypes
-        - -Wno-old-style-cast
-        - -Wno-unsafe-buffer-usage
-        - -Wno-declaration-after-statement
-        - -Werror
-        - -Wextra
-        - -Wgcc-compat
+  Add:
+    - -xc
+    - -I/usr/local/cuda/include
+    - -Weverything
+    - -Wno-c++98-compat
+    - -Wno-c++98-compat-pedantic
+    - -Wno-unknown-cuda-version
+    - -Wno-missing-prototypes
+    - -Wno-old-style-cast
+    - -Wno-unsafe-buffer-usage
+    - -Wno-declaration-after-statement
+    - -Wno-implicit-void-ptr-cast
+    - -Werror
+    - -Wextra
+    - -Wgcc-compat

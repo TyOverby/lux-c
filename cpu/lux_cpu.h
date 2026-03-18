@@ -1,4 +1,5 @@
+#pragma once
 #include "../shared/lux.h"
 #include "../shared/lux_priv.h"
 
-lux_scene* lux_cpu_create_scene(void);
+LUX_NODISCARD lux_scene* lux_cpu_create_scene(void);
