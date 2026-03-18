@@ -120,5 +120,17 @@ Then re-run tests to confirm they pass.
 
 1. Add a new function in the relevant `main.c` (e.g. `test/draw_pixel/main.c`).
 2. Add an entry to the `tests[]` array.
-3. Run the tests — dune will regenerate `dune.inc` automatically.
-4. Inspect the generated `.png`, then copy it to `expected/`.
+3. Run the tests with `--auto-promote` to regenerate the `dune.inc` files:
+   ```bash
+   opam exec -- dune build @runtest --auto-promote
+   ```
+   The build rules use a **diff workflow**: the test executable generates
+   `dune.inc.gen` files which are compared against the checked-in `dune.inc`
+   files. `--auto-promote` copies the generated versions into the source tree
+   so dune picks up the new test targets.
+4. Run the tests a second time (now that `dune.inc` is up to date, the new
+   images will be generated and promoted into `actual/`):
+   ```bash
+   opam exec -- dune build @runtest
+   ```
+5. Inspect the generated `.png` in `actual/`, then copy it to `expected/`.
