@@ -89,16 +89,6 @@
    -o %{targets}
    %{read-lines:../test_sources.txt})))
 
-(rule
- (alias sanitize)
- (deps main-asan.exe)
- (action (run ./main-asan.exe --no-images)))
-
-(rule
- (alias sanitize)
- (deps main-ubsan.exe)
- (action (run ./main-ubsan.exe --no-images)))
-
 ; msan: Linux only (Apple clang doesn't support -fsanitize=memory)
 (rule
  (targets main-msan.exe)
@@ -122,7 +112,17 @@
    %{read-lines:../test_sources.txt})))
 
 (rule
- (alias sanitize)
+ (alias runtest)
+ (deps main-asan.exe)
+ (action (run ./main-asan.exe --no-images)))
+
+(rule
+ (alias runtest)
+ (deps main-ubsan.exe)
+ (action (run ./main-ubsan.exe --no-images)))
+
+(rule
+ (alias runtest)
  (enabled_if (= %{system} linux))
  (deps main-msan.exe)
  (action (run ./main-msan.exe --no-images)))
