@@ -45,8 +45,8 @@ lux_scene* lux_cpu_create_scene(void) {
   return scene;
 }
 
-static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width, lux_color color) {
-  if (x >= 0 && x < (int32_t)width && y >= 0 && y < (int32_t)width) {
+static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width, uint32_t height, lux_color color) {
+  if (x >= 0 && x < (int32_t)width && y >= 0 && y < (int32_t)height) {
     if (color.a == 255) {
       output[(size_t)y * width + (size_t)x] = color;
     } else {
@@ -74,16 +74,32 @@ static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width,
 static void draw_pixel(lux_instr_pixel instr, lux_dispatch_args args, lux_color* output) {
   int32_t x = instr.x - args.dx;
   int32_t y = instr.y - args.dy;
-  write_pixel(output, x, y, args.width, instr.color);
+  write_pixel(output, x, y, args.width, args.height, instr.color);
 }
 
 static void draw_rect(lux_instr_rect instr, lux_dispatch_args args, lux_color* output) {
   // TODO: bail out of these loops early if remainder of row or columns is out of bounds.
-  int32_t x = instr.x - args.dx;
-  int32_t y = instr.y - args.dy;
-  for (int32_t dy = 0; dy < (int32_t)instr.h; dy++) {
-    for (int32_t dx = 0; dx < (int32_t)instr.w; dx++) {
-      write_pixel(output, x + dx, y + dy, args.width, instr.color);
+  int32_t sx = instr.x - args.dx;
+  int32_t sy = instr.y - args.dy;
+  uint32_t w = instr.w;
+  uint32_t h = instr.h;
+
+  if (sx + (int32_t)w < 0 || sy + (int32_t)h < 0 || sx > (int32_t)args.width || sy > (int32_t)args.height) {
+    return;
+  }
+
+  if (sx < 0) {
+    w = w - (uint32_t)(-sx);
+    sx = 0;
+  }
+  if (sy < 0) {
+    h = h - (uint32_t)(-sy);
+    sy = 0;
+  }
+
+  for (uint32_t y = (uint32_t)sy; y < (uint32_t)sy + h; y++) {
+    for (uint32_t x = (uint32_t)sx; x < (uint32_t)sx + w; x++) {
+      write_pixel(output, (int32_t)x, (int32_t)y, args.width, args.height, instr.color);
     }
   }
 }
