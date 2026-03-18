@@ -2,6 +2,7 @@
  (alias lint)
  (deps
   main.c
+  ../test_harness.h
   ../../cpu/lux_cpu.c
   ../../cpu/lux_cpu.h
   ../../shared/lux.h
@@ -22,6 +23,7 @@
  (targets main.exe)
  (deps
   main.c
+  ../test_harness.h
   ../../cpu/lux_cpu.c
   ../../shared/lux_priv.c
   ../../shared/lux.h
@@ -40,39 +42,13 @@
    ../../cpu/lux_cpu.c
    ../../shared/lux_priv.c)))
 
-; run the tests and promote outputs
+; generate dune.inc from the test list
 (rule
- (alias runtest)
+ (targets dune.inc)
+ (deps main.exe)
  (action
-  (run ./main.exe))
- (targets
-  single_pixel.png
-  corners.png
-  alpha_blend.png
-  scatter.png)
+  (with-stdout-to %{targets}
+   (run ./main.exe --generate-dune)))
  (mode promote))
 
-; compare each output against expected
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" single_pixel.expected.png single_pixel.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" corners.expected.png corners.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" alpha_blend.expected.png alpha_blend.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" scatter.expected.png scatter.png)
- (action
-  (bash "%{deps}")))
+(include dune.inc)

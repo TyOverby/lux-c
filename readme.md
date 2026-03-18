@@ -28,6 +28,7 @@ gpu/
 └── dune
 test/
 ├── imgdiff.sh           — image comparison script
+├── test_harness.h       — shared test runner and dune.inc generator
 ├── draw_pixel/          — pixel rendering tests
 └── draw_rect/           — rectangle rendering tests
 ```
@@ -115,14 +116,6 @@ Then re-run tests to confirm they pass.
 ### Adding a new test case
 
 1. Add a new function in the relevant `main.c` (e.g. `test/draw_pixel/main.c`).
-2. Call it from `main()`.
-3. Add the new output filename to the `(targets ...)` list in the promote rule in `dune`.
-4. Add a new comparison rule in `dune`:
-   ```dune
-   (rule
-    (alias runtest)
-    (deps "../imgdiff.sh" my_test.expected.png my_test.png)
-    (action
-     (bash "%{deps}")))
-   ```
-5. Run the tests once, inspect the generated `.png`, then copy it to `.expected.png`.
+2. Add an entry to the `tests[]` array.
+3. Run the tests — dune will regenerate `dune.inc` automatically.
+4. Inspect the generated `.png`, then copy it to `.expected.png`.

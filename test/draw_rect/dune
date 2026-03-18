@@ -2,6 +2,7 @@
  (alias lint)
  (deps
   main.c
+  ../test_harness.h
   ../../cpu/lux_cpu.c
   ../../cpu/lux_cpu.h
   ../../shared/lux.h
@@ -22,6 +23,7 @@
  (targets main.exe)
  (deps
   main.c
+  ../test_harness.h
   ../../cpu/lux_cpu.c
   ../../shared/lux_priv.c
   ../../shared/lux.h
@@ -40,46 +42,13 @@
    ../../cpu/lux_cpu.c
    ../../shared/lux_priv.c)))
 
-; run the tests and promote outputs
+; generate dune.inc from the test list
 (rule
- (alias runtest)
+ (targets dune.inc)
+ (deps main.exe)
  (action
-  (run ./main.exe))
- (targets
-  single_rect.png
-  overlapping.png
-  alpha_rects.png
-  full_canvas.png
-  nested.png)
+  (with-stdout-to %{targets}
+   (run ./main.exe --generate-dune)))
  (mode promote))
 
-; compare each output against expected
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" single_rect.expected.png single_rect.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" overlapping.expected.png overlapping.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" alpha_rects.expected.png alpha_rects.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" full_canvas.expected.png full_canvas.png)
- (action
-  (bash "%{deps}")))
-
-(rule
- (alias runtest)
- (deps "../imgdiff.sh" nested.expected.png nested.png)
- (action
-  (bash "%{deps}")))
+(include dune.inc)
