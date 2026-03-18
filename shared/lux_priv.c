@@ -1,5 +1,6 @@
 #include "lux_priv.h"
 #include <stdint.h>
+#include <stdlib.h>
 #include "lux.h"
 
 lux_instruction_buffer* lux_get_instruction_buffer(lux_scene* scene) {
@@ -10,7 +11,11 @@ void lux_dispatch(lux_scene* scene, lux_dispatch_args args, lux_color* pixel_buf
   scene->dispatch(scene, args, pixel_buffer);
 }
 
-void lux_free(lux_scene* scene) {
+void lux_free_scene(lux_scene* scene) {
+  if (scene == NULL) {
+    return;
+  }
+
   scene->free(scene);
 }
 
@@ -81,6 +86,10 @@ lux_instruction_buffer* lux_priv_create_instruction_buffer(size_t capacity) {
 }
 
 void lux_priv_free_instruction_buffer(lux_instruction_buffer* buffer) {
+  if (buffer == NULL) {
+    return;
+  }
+
   free(buffer->data);
   buffer->data = NULL;
   buffer->length = 0;

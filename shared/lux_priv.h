@@ -1,6 +1,6 @@
 #pragma once
+#include <stddef.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include "lux.h"
 
 /* Because there are multiple different backends for lux, we build a vtable-like
