@@ -42,13 +42,13 @@
    ../../cpu/lux_cpu.c
    ../../shared/lux_priv.c)))
 
-; generate dune.inc from the test list
+; generate comparison rules
 (rule
  (targets dune.inc)
  (deps main.exe)
  (action
   (with-stdout-to %{targets}
-   (run ./main.exe --generate-dune)))
+   (run ./main.exe --generate-comparisons)))
  (mode promote))
 
 (include dune.inc)

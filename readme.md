@@ -76,16 +76,16 @@ test/
 ├── test_harness.h          — shared test runner and dune.inc generator
 ├── draw_pixel/
 │   ├── main.c              — pixel rendering tests
-│   ├── dune
-│   ├── dune.inc            — auto-generated test rules
-│   ├── *.png               — latest outputs (auto-promoted by dune)
-│   └── expected/*.png      — checked-in baselines
+│   ├── dune                — compile, lint, and comparison rules
+│   ├── dune.inc            — auto-generated comparison rules
+│   ├── actual/             — latest outputs (auto-promoted by dune, gitignored)
+│   └── expected/           — checked-in baselines
 └── draw_rect/
     ├── main.c              — rectangle rendering tests
-    ├── dune
-    ├── dune.inc            — auto-generated test rules
-    ├── *.png               — latest outputs (auto-promoted by dune)
-    └── expected/*.png      — checked-in baselines
+    ├── dune                — compile, lint, and comparison rules
+    ├── dune.inc            — auto-generated comparison rules
+    ├── actual/             — latest outputs (auto-promoted by dune, gitignored)
+    └── expected/           — checked-in baselines
 ```
 
 ### Running tests
@@ -108,10 +108,10 @@ If a rendering change is intentional and the new output looks correct:
 
 ```bash
 # promote a single baseline
-cp test/draw_pixel/single_pixel.png test/draw_pixel/expected/single_pixel.png
+cp test/draw_pixel/actual/single_pixel.png test/draw_pixel/expected/
 
 # or promote all baselines for a test group
-cp test/draw_rect/*.png test/draw_rect/expected/
+cp test/draw_rect/actual/*.png test/draw_rect/expected/
 ```
 
 Then re-run tests to confirm they pass.

@@ -13,25 +13,28 @@ typedef struct {
   test_fn fn;
 } test_case;
 
-static void generate_dune(const test_case* tests, int count) {
+static void generate_dune_targets(const test_case* tests, int count) {
   printf(
       "(rule\n"
       " (alias runtest)\n"
+      " (deps ../main.exe)\n"
       " (action\n"
-      "  (run ./main.exe))\n"
+      "  (run ../main.exe))\n"
       " (targets");
   for (int i = 0; i < count; i++) {
     printf("\n  %s.png", tests[i].name);
   }
   printf(
       ")\n"
-      " (mode promote))\n\n");
+      " (mode promote))\n");
+}
 
+static void generate_dune_comparisons(const test_case* tests, int count) {
   for (int i = 0; i < count; i++) {
     printf(
         "(rule\n"
         " (alias runtest)\n"
-        " (deps \"../imgdiff.sh\" expected/%s.png %s.png)\n"
+        " (deps \"../imgdiff.sh\" expected/%s.png actual/%s.png)\n"
         " (action\n"
         "  (bash \"%%{deps}\")))\n\n",
         tests[i].name, tests[i].name);
@@ -60,8 +63,12 @@ static void run_tests(const test_case* tests, int count, uint32_t width, uint32_
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
 static int test_main(const test_case* tests, int count, uint32_t width, uint32_t height, int argc, char** argv) {
-  if (argc > 1 && strcmp(argv[1], "--generate-dune") == 0) {
-    generate_dune(tests, count);
+  if (argc > 1 && strcmp(argv[1], "--generate-targets") == 0) {
+    generate_dune_targets(tests, count);
+    return 0;
+  }
+  if (argc > 1 && strcmp(argv[1], "--generate-comparisons") == 0) {
+    generate_dune_comparisons(tests, count);
     return 0;
   }
   run_tests(tests, count, width, height);

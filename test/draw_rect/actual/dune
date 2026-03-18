@@ -1,0 +1,10 @@
+; generate target rules
+(rule
+ (targets dune.inc)
+ (deps ../main.exe)
+ (action
+  (with-stdout-to %{targets}
+   (run ../main.exe --generate-targets)))
+ (mode promote))
+
+(include dune.inc)
