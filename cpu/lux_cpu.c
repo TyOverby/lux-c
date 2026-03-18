@@ -1,6 +1,7 @@
 #include "lux_cpu.h"
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "../shared/lux_priv.h"
 
@@ -77,6 +78,7 @@ static void draw_pixel(lux_instr_pixel instr, lux_dispatch_args args, lux_color*
 }
 
 static void draw_rect(lux_instr_rect instr, lux_dispatch_args args, lux_color* output) {
+  // TODO: bail out of these loops early if remainder of row or columns is out of bounds.
   int32_t x = instr.x - args.dx;
   int32_t y = instr.y - args.dy;
   for (int32_t dy = 0; dy < (int32_t)instr.h; dy++) {
