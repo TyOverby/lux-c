@@ -1,0 +1,3 @@
+main.c
+../../cpu/lux_cpu.c
+../../shared/lux_priv.c

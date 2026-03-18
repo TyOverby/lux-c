@@ -1,0 +1,2 @@
+-DSTB_IMAGE_WRITE_IMPLEMENTATION
+-I../../utilities/stb

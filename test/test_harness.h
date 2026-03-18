@@ -41,7 +41,7 @@ static void generate_dune_comparisons(const test_case* tests, int count) {
   }
 }
 
-static void run_tests(const test_case* tests, int count, uint32_t width, uint32_t height) {
+static void run_tests(const test_case* tests, int count, uint32_t width, uint32_t height, int write_images) {
   for (int i = 0; i < count; i++) {
     lux_scene* scene = lux_cpu_create_scene();
     lux_instruction_buffer* buf = lux_get_instruction_buffer(scene);
@@ -51,9 +51,11 @@ static void run_tests(const test_case* tests, int count, uint32_t width, uint32_
     lux_color* output = malloc(width * height * sizeof(lux_color));
     lux_dispatch(scene, (lux_dispatch_args){.dx = 0, .dy = 0, .width = width, .height = height}, output);
 
-    char filename[256];
-    snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
-    stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+    if (write_images) {
+      char filename[256];
+      snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
+      stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+    }
 
     free(output);
     lux_free_scene(scene);
@@ -71,7 +73,11 @@ static int test_main(const test_case* tests, int count, uint32_t width, uint32_t
     generate_dune_comparisons(tests, count);
     return 0;
   }
-  run_tests(tests, count, width, height);
+  if (argc > 1 && strcmp(argv[1], "--no-images") == 0) {
+    run_tests(tests, count, width, height, 0);
+    return 0;
+  }
+  run_tests(tests, count, width, height, 1);
   return 0;
 }
 #pragma clang diagnostic pop

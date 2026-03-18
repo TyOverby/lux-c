@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-DIFF=$(magick "$1" "$2" null: 2>&1 | sed -n 's/.*(\([0-9.eE+-]*\)).*/\1/p' || true)
-THRESHOLD=0.01
+DIFF=$(magick compare "$1" "$2" null: 2>&1 | sed -n 's/.*(\([0-9.eE+-]*\)).*/\1/p' || true)
+THRESHOLD=0.00
 
 # Handle empty DIFF (treat as 0)
 if [ -z "$DIFF" ]; then
