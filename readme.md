@@ -30,18 +30,18 @@ gpu/
 
 ## Design Decisions
 
-**Runtime compilation with NVRTC instead of nvcc.**  The host code is compiled
+**Runtime compilation with NVRTC instead of nvcc.** The host code is compiled
 with plain `gcc`. The CUDA kernel source is kept in a separate `kernel.cu` file
 which gets loaded as a string and compiled at runtime via NVRTC. This means the
 edit-run cycle for kernel code doesn't require a recompile of the host program.
 
-**CUDA Driver API instead of Runtime API.**  Since we're using NVRTC to compile
+**CUDA Driver API instead of Runtime API.** Since we're using NVRTC to compile
 kernels at runtime, we use the CUDA Driver API (`cuMemAlloc`, `cuLaunchKernel`,
 etc.) rather than the Runtime API (`cudaMalloc`, `<<<>>>` syntax). The Driver API
 gives explicit control over contexts, modules, and kernel launches, which pairs
 naturally with runtime-compiled PTX.
 
-**dune as the build system.**  Each subdirectory has a `dune` file with custom
+**dune as the build system.** Each subdirectory has a `dune` file with custom
 rules that invoke `gcc` directly. This keeps the build declarative and incremental
 without needing CMake or Makefiles.
 
@@ -49,12 +49,12 @@ without needing CMake or Makefiles.
 
 ```bash
 # build and run the CPU backend
-dune build @cpu/run
+opam exec -- dune build @cpu/run
 
 # build and run the GPU backend
-dune build @gpu/run
+opam exec -- dune build @gpu/run
 
 # build a specific target
-dune build examples/cpu-basic/main.exe
-dune build gpu/main.exe
+opam exec -- dune build examples/cpu-basic/main.exe
+opam exec -- dune build gpu/main.exe
 ```
