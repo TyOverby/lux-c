@@ -8,12 +8,27 @@
 
 typedef void (*test_fn)(lux_instruction_buffer*);
 
+typedef enum {
+  TEST_IMAGE,
+  TEST_FULLY_TRANSPARENT,
+} test_type;
+
 typedef struct {
   const char* name;
   test_fn fn;
+  test_type type;
 } test_case;
 
 static void generate_dune_targets(const test_case* tests, int count) {
+  int has_image_tests = 0;
+  for (int i = 0; i < count; i++) {
+    if (tests[i].type == TEST_IMAGE) {
+      has_image_tests = 1;
+      break;
+    }
+  }
+  if (!has_image_tests) return;
+
   printf(
       "(rule\n"
       " (alias runtest)\n"
@@ -22,7 +37,9 @@ static void generate_dune_targets(const test_case* tests, int count) {
       "  (run ../main.exe))\n"
       " (targets");
   for (int i = 0; i < count; i++) {
-    printf("\n  %s.png", tests[i].name);
+    if (tests[i].type == TEST_IMAGE) {
+      printf("\n  %s.png", tests[i].name);
+    }
   }
   printf(
       ")\n"
@@ -31,17 +48,20 @@ static void generate_dune_targets(const test_case* tests, int count) {
 
 static void generate_dune_comparisons(const test_case* tests, int count) {
   for (int i = 0; i < count; i++) {
-    printf(
-        "(rule\n"
-        " (alias runtest)\n"
-        " (deps \"../imgdiff.sh\" expected/%s.png actual/%s.png)\n"
-        " (action\n"
-        "  (bash \"%%{deps}\")))\n\n",
-        tests[i].name, tests[i].name);
+    if (tests[i].type == TEST_IMAGE) {
+      printf(
+          "(rule\n"
+          " (alias runtest)\n"
+          " (deps \"../imgdiff.sh\" expected/%s.png actual/%s.png)\n"
+          " (action\n"
+          "  (bash \"%%{deps}\")))\n\n",
+          tests[i].name, tests[i].name);
+    }
   }
 }
 
-static void run_tests(const test_case* tests, int count, uint32_t width, uint32_t height, int write_images) {
+static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t height, int write_images) {
+  int failures = 0;
   for (int i = 0; i < count; i++) {
     lux_scene* scene = lux_cpu_create_scene();
     lux_instruction_buffer* buf = lux_get_instruction_buffer(scene);
@@ -51,15 +71,32 @@ static void run_tests(const test_case* tests, int count, uint32_t width, uint32_
     lux_color* output = malloc(width * height * sizeof(lux_color));
     lux_dispatch(scene, (lux_dispatch_args){.dx = 0, .dy = 0, .width = width, .height = height}, output);
 
-    if (write_images) {
-      char filename[256];
-      snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
-      stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+    switch (tests[i].type) {
+    case TEST_IMAGE:
+      if (write_images) {
+        char filename[256];
+        snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
+        stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+      }
+      break;
+    case TEST_FULLY_TRANSPARENT: {
+      lux_color zero = {0, 0, 0, 0};
+      for (uint32_t j = 0; j < width * height; j++) {
+        if (memcmp(&output[j], &zero, sizeof(lux_color)) != 0) {
+          fprintf(stderr, "FAIL: %s — pixel %u is (%u,%u,%u,%u), expected (0,0,0,0)\n", tests[i].name, j,
+                  output[j].r, output[j].g, output[j].b, output[j].a);
+          failures++;
+          break;
+        }
+      }
+      break;
+    }
     }
 
     free(output);
     lux_free_scene(scene);
   }
+  return failures;
 }
 
 #pragma clang diagnostic push
@@ -74,10 +111,8 @@ static int test_main(const test_case* tests, int count, uint32_t width, uint32_t
     return 0;
   }
   if (argc > 1 && strcmp(argv[1], "--no-images") == 0) {
-    run_tests(tests, count, width, height, 0);
-    return 0;
+    return run_tests(tests, count, width, height, 0);
   }
-  run_tests(tests, count, width, height, 1);
-  return 0;
+  return run_tests(tests, count, width, height, 1);
 }
 #pragma clang diagnostic pop

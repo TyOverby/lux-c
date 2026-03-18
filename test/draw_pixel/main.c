@@ -104,28 +104,28 @@ static void test_oob_edge_bottom_right(lux_instruction_buffer* buf) {
 }
 
 static test_case tests[] = {
-    {"single_pixel", test_single_pixel},
-    {"corners", test_corners},
-    {"alpha_blend", test_alpha_blend},
-    {"scatter", test_scatter},
+    {"single_pixel", test_single_pixel, TEST_IMAGE},
+    {"corners", test_corners, TEST_IMAGE},
+    {"alpha_blend", test_alpha_blend, TEST_IMAGE},
+    {"scatter", test_scatter, TEST_IMAGE},
     // fully out of bounds
-    {"oob_full_left", test_oob_full_left},
-    {"oob_full_right", test_oob_full_right},
-    {"oob_full_top", test_oob_full_top},
-    {"oob_full_bottom", test_oob_full_bottom},
-    {"oob_full_top_left", test_oob_full_top_left},
-    {"oob_full_top_right", test_oob_full_top_right},
-    {"oob_full_bottom_left", test_oob_full_bottom_left},
-    {"oob_full_bottom_right", test_oob_full_bottom_right},
+    {"oob_full_left", test_oob_full_left, TEST_FULLY_TRANSPARENT},
+    {"oob_full_right", test_oob_full_right, TEST_FULLY_TRANSPARENT},
+    {"oob_full_top", test_oob_full_top, TEST_FULLY_TRANSPARENT},
+    {"oob_full_bottom", test_oob_full_bottom, TEST_FULLY_TRANSPARENT},
+    {"oob_full_top_left", test_oob_full_top_left, TEST_FULLY_TRANSPARENT},
+    {"oob_full_top_right", test_oob_full_top_right, TEST_FULLY_TRANSPARENT},
+    {"oob_full_bottom_left", test_oob_full_bottom_left, TEST_FULLY_TRANSPARENT},
+    {"oob_full_bottom_right", test_oob_full_bottom_right, TEST_FULLY_TRANSPARENT},
     // one pixel past each edge
-    {"oob_edge_left", test_oob_edge_left},
-    {"oob_edge_right", test_oob_edge_right},
-    {"oob_edge_top", test_oob_edge_top},
-    {"oob_edge_bottom", test_oob_edge_bottom},
-    {"oob_edge_top_left", test_oob_edge_top_left},
-    {"oob_edge_top_right", test_oob_edge_top_right},
-    {"oob_edge_bottom_left", test_oob_edge_bottom_left},
-    {"oob_edge_bottom_right", test_oob_edge_bottom_right},
+    {"oob_edge_left", test_oob_edge_left, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_right", test_oob_edge_right, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_top", test_oob_edge_top, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_bottom", test_oob_edge_bottom, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_top_left", test_oob_edge_top_left, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_top_right", test_oob_edge_top_right, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_bottom_left", test_oob_edge_bottom_left, TEST_FULLY_TRANSPARENT},
+    {"oob_edge_bottom_right", test_oob_edge_bottom_right, TEST_FULLY_TRANSPARENT},
 };
 
 int main(int argc, char** argv) {
