@@ -26,6 +26,10 @@ gpu/
 ├── main.c               — GPU backend demo
 ├── kernel.cu            — GPU kernel (compiled at runtime via NVRTC)
 └── dune
+test/
+├── imgdiff.sh           — image comparison script
+├── draw_pixel/          — pixel rendering tests
+└── draw_rect/           — rectangle rendering tests
 ```
 
 ## Design Decisions
@@ -58,3 +62,67 @@ opam exec -- dune build @gpu/run
 opam exec -- dune build examples/cpu-basic/main.exe
 opam exec -- dune build gpu/main.exe
 ```
+
+## Testing
+
+Tests use a **check against expected / promote** workflow. Each test executable
+produces PNG images which are compared against checked-in `.expected.png`
+baselines using ImageMagick (with a 1% fuzzy threshold via `test/imgdiff.sh`).
+
+```
+test/
+├── imgdiff.sh              — image comparison script (requires ImageMagick)
+├── draw_pixel/
+│   ├── main.c              — pixel rendering tests
+│   ├── dune
+│   ├── *.png               — latest outputs (auto-promoted by dune)
+│   └── *.expected.png      — checked-in baselines
+└── draw_rect/
+    ├── main.c              — rectangle rendering tests
+    ├── dune
+    ├── *.png               — latest outputs (auto-promoted by dune)
+    └── *.expected.png      — checked-in baselines
+```
+
+### Running tests
+
+```bash
+# run all tests
+opam exec -- dune build @runtest
+
+# run a specific test group
+opam exec -- dune build @test/draw_pixel/runtest
+opam exec -- dune build @test/draw_rect/runtest
+```
+
+When tests run, dune's `(mode promote)` automatically copies the generated
+`.png` files into the source tree so you can inspect them directly.
+
+### Updating baselines
+
+If a rendering change is intentional and the new output looks correct:
+
+```bash
+# promote a single baseline
+cp test/draw_pixel/single_pixel.png test/draw_pixel/single_pixel.expected.png
+
+# or promote all baselines for a test group
+cd test/draw_rect && for f in *.png; do cp "$f" "${f%.png}.expected.png"; done
+```
+
+Then re-run tests to confirm they pass.
+
+### Adding a new test case
+
+1. Add a new function in the relevant `main.c` (e.g. `test/draw_pixel/main.c`).
+2. Call it from `main()`.
+3. Add the new output filename to the `(targets ...)` list in the promote rule in `dune`.
+4. Add a new comparison rule in `dune`:
+   ```dune
+   (rule
+    (alias runtest)
+    (deps "../imgdiff.sh" my_test.expected.png my_test.png)
+    (action
+     (bash "%{deps}")))
+   ```
+5. Run the tests once, inspect the generated `.png`, then copy it to `.expected.png`.

@@ -1,0 +1,78 @@
+(rule
+ (alias lint)
+ (deps
+  main.c
+  ../../cpu/lux_cpu.c
+  ../../cpu/lux_cpu.h
+  ../../shared/lux.h
+  ../../shared/lux_priv.h
+  ../../compile_flags.txt
+  (glob_files ../../utilities/stb/*.h))
+ (action
+  (run
+   clang
+   -fsyntax-only
+   -I../../utilities/stb
+   %{read-lines:../../compile_flags.txt}
+   main.c
+   ../../cpu/lux_cpu.c)))
+
+; compile the test executable
+(rule
+ (targets main.exe)
+ (deps
+  main.c
+  ../../cpu/lux_cpu.c
+  ../../shared/lux_priv.c
+  ../../shared/lux.h
+  ../../shared/lux_priv.h
+  ../../cpu/lux_cpu.h
+  (glob_files ../../utilities/stb/*.h))
+ (action
+  (run
+   clang
+   -O2
+   -DSTB_IMAGE_WRITE_IMPLEMENTATION
+   -I../../utilities/stb
+   -o
+   %{targets}
+   main.c
+   ../../cpu/lux_cpu.c
+   ../../shared/lux_priv.c)))
+
+; run the tests and promote outputs
+(rule
+ (alias runtest)
+ (action
+  (run ./main.exe))
+ (targets
+  single_pixel.png
+  corners.png
+  alpha_blend.png
+  scatter.png)
+ (mode promote))
+
+; compare each output against expected
+(rule
+ (alias runtest)
+ (deps "../imgdiff.sh" single_pixel.expected.png single_pixel.png)
+ (action
+  (bash "%{deps}")))
+
+(rule
+ (alias runtest)
+ (deps "../imgdiff.sh" corners.expected.png corners.png)
+ (action
+  (bash "%{deps}")))
+
+(rule
+ (alias runtest)
+ (deps "../imgdiff.sh" alpha_blend.expected.png alpha_blend.png)
+ (action
+  (bash "%{deps}")))
+
+(rule
+ (alias runtest)
+ (deps "../imgdiff.sh" scatter.expected.png scatter.png)
+ (action
+  (bash "%{deps}")))
