@@ -26,9 +26,11 @@ size_t lux_priv_push_instruction(lux_instruction_buffer* buffer, lux_instruction
     }
 
     lux_instruction* new_data = (lux_instruction*)realloc(buffer->data, new_capacity * sizeof(lux_instruction));
+
     if (new_data == NULL) {
       return 0;
     }
+
     buffer->data = new_data;
     buffer->capacity = new_capacity;
   }
