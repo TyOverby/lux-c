@@ -38,14 +38,14 @@
    -o %{targets}
    %{read-lines:../test_sources.txt})))
 
-; generate comparison rules
+; generate comparison rules (diff workflow: run --auto-promote to sync)
 (rule
- (targets dune.inc)
- (deps main.exe)
- (action
-  (with-stdout-to %{targets}
-   (run ./main.exe --generate-comparisons)))
- (mode promote))
+ (with-stdout-to dune.inc.gen
+  (run ./main.exe --generate-comparisons)))
+
+(rule
+ (alias runtest)
+ (action (diff dune.inc dune.inc.gen)))
 
 ; --- sanitizer builds ---
 

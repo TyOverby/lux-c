@@ -1,10 +1,9 @@
-; generate target rules
-(rule
- (targets dune.inc)
- (deps ../main.exe)
- (action
-  (with-stdout-to %{targets}
-   (run ../main.exe --generate-targets)))
- (mode promote))
-
 (include dune.inc)
+
+(rule
+ (with-stdout-to dune.inc.gen
+  (run ../main.exe --generate-targets)))
+
+(rule
+ (alias runtest)
+ (action (diff dune.inc dune.inc.gen)))
