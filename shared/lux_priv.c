@@ -50,7 +50,7 @@ size_t lux_push_pixel(lux_instruction_buffer* buffer, int32_t x, int32_t y, lux_
   return lux_priv_push_instruction(buffer, (lux_instruction){.kind = Pixel, .data = data});
 }
 
-size_t lux_push_rect(lux_instruction_buffer* buffer, int32_t x, int32_t y, int32_t w, int32_t h, lux_color color) {
+size_t lux_push_rect(lux_instruction_buffer* buffer, int32_t x, int32_t y, uint32_t w, uint32_t h, lux_color color) {
   lux_instruction_data data =
       (lux_instruction_data){.Rect.x = x, .Rect.y = y, .Rect.w = w, .Rect.h = h, .Rect.color = color};
   return lux_priv_push_instruction(buffer, (lux_instruction){.kind = Rect, .data = data});

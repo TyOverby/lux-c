@@ -11,6 +11,7 @@ CompileFlags:
     - -Wno-unsafe-buffer-usage
     - -Wno-declaration-after-statement
     - -Wno-implicit-void-ptr-cast
+    - -Wno-switch-default
     - -Werror
     - -Wextra
     - -Wgcc-compat

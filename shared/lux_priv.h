@@ -23,16 +23,13 @@ typedef union {
   } NoOp;
 
   struct Pixel {
-    int32_t x;
-    int32_t y;
+    int32_t x, y;
     lux_color color;
   } Pixel;
 
   struct Rect {
-    int32_t x;
-    int32_t y;
-    int32_t w;
-    int32_t h;
+    int32_t x, y;
+    uint32_t w, h;
     lux_color color;
   } Rect;
 } lux_instruction_data;
