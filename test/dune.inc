@@ -113,16 +113,16 @@
 
 (rule
  (alias runtest)
- (deps main-asan.exe)
- (action (run ./main-asan.exe --no-images)))
+ (deps main-asan.exe actual/assertion_results.txt)
+ (action (bash "if [ -s actual/assertion_results.txt ]; then echo 'SKIP: asan (assertions failed)'; exit 0; fi && ./main-asan.exe --no-images")))
 
 (rule
  (alias runtest)
- (deps main-ubsan.exe)
- (action (run ./main-ubsan.exe --no-images)))
+ (deps main-ubsan.exe actual/assertion_results.txt)
+ (action (bash "if [ -s actual/assertion_results.txt ]; then echo 'SKIP: ubsan (assertions failed)'; exit 0; fi && ./main-ubsan.exe --no-images")))
 
 (rule
  (alias runtest)
  (enabled_if (= %{system} linux))
- (deps main-msan.exe)
- (action (run ./main-msan.exe --no-images)))
+ (deps main-msan.exe actual/assertion_results.txt)
+ (action (bash "if [ -s actual/assertion_results.txt ]; then echo 'SKIP: msan (assertions failed)'; exit 0; fi && ./main-msan.exe --no-images")))

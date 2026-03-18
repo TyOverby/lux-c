@@ -5,3 +5,4 @@ opam
 # Test outputs: only commit the expected/ baselines
 test/**/*.png
 !test/**/expected/*.png
+test/**/assertion_results.txt

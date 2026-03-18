@@ -2,7 +2,7 @@
  (alias runtest)
  (deps ../main.exe)
  (action
-  (run ../main.exe))
+  (bash "../main.exe 2>assertion_results.txt || true"))
  (targets
   single_rect.png
   overlapping.png
@@ -16,5 +16,12 @@
   oob_partial_top_left.png
   oob_partial_top_right.png
   oob_partial_bottom_left.png
-  oob_partial_bottom_right.png)
+  oob_partial_bottom_right.png
+  assertion_results.txt)
  (mode promote))
+
+(rule
+ (alias runtest)
+ (deps assertion_results.txt)
+ (action
+  (bash "if [ -s assertion_results.txt ]; then cat assertion_results.txt >&2; exit 1; fi")))

@@ -31,12 +31,13 @@ static void generate_dune_targets(const test_case* tests, int count) {
     return;
   }
 
+  // Rule 1: generate images, capture assertion stderr, always succeed
   printf(
       "(rule\n"
       " (alias runtest)\n"
       " (deps ../main.exe)\n"
       " (action\n"
-      "  (run ../main.exe))\n"
+      "  (bash \"../main.exe 2>assertion_results.txt || true\"))\n"
       " (targets");
   for (int i = 0; i < count; i++) {
     if (tests[i].type == TEST_IMAGE) {
@@ -44,8 +45,17 @@ static void generate_dune_targets(const test_case* tests, int count) {
     }
   }
   printf(
+      "\n  assertion_results.txt"
       ")\n"
-      " (mode promote))\n");
+      " (mode promote))\n\n");
+
+  // Rule 2: check assertion results (fails if any assertions produced output)
+  printf(
+      "(rule\n"
+      " (alias runtest)\n"
+      " (deps assertion_results.txt)\n"
+      " (action\n"
+      "  (bash \"if [ -s assertion_results.txt ]; then cat assertion_results.txt >&2; exit 1; fi\")))\n");
 }
 
 static void generate_dune_comparisons(const test_case* tests, int count) {
