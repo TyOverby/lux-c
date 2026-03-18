@@ -2,6 +2,6 @@ _build
 _opam
 opam
 
-# Test outputs: only commit the .expected.png baselines
+# Test outputs: only commit the expected/ baselines
 test/**/*.png
-!test/**/*.expected.png
+!test/**/expected/*.png

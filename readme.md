@@ -29,8 +29,8 @@ gpu/
 test/
 ├── imgdiff.sh           — image comparison script
 ├── test_harness.h       — shared test runner and dune.inc generator
-├── draw_pixel/          — pixel rendering tests
-└── draw_rect/           — rectangle rendering tests
+├── draw_pixel/          — pixel rendering tests (expected/ has baselines)
+└── draw_rect/           — rectangle rendering tests (expected/ has baselines)
 ```
 
 ## Design Decisions
@@ -67,22 +67,25 @@ opam exec -- dune build gpu/main.exe
 ## Testing
 
 Tests use a **check against expected / promote** workflow. Each test executable
-produces PNG images which are compared against checked-in `.expected.png`
-baselines using ImageMagick (with a 1% fuzzy threshold via `test/imgdiff.sh`).
+produces PNG images which are compared against checked-in baselines in
+`expected/` using ImageMagick (with a 1% fuzzy threshold via `test/imgdiff.sh`).
 
 ```
 test/
 ├── imgdiff.sh              — image comparison script (requires ImageMagick)
+├── test_harness.h          — shared test runner and dune.inc generator
 ├── draw_pixel/
 │   ├── main.c              — pixel rendering tests
 │   ├── dune
+│   ├── dune.inc            — auto-generated test rules
 │   ├── *.png               — latest outputs (auto-promoted by dune)
-│   └── *.expected.png      — checked-in baselines
+│   └── expected/*.png      — checked-in baselines
 └── draw_rect/
     ├── main.c              — rectangle rendering tests
     ├── dune
+    ├── dune.inc            — auto-generated test rules
     ├── *.png               — latest outputs (auto-promoted by dune)
-    └── *.expected.png      — checked-in baselines
+    └── expected/*.png      — checked-in baselines
 ```
 
 ### Running tests
@@ -105,10 +108,10 @@ If a rendering change is intentional and the new output looks correct:
 
 ```bash
 # promote a single baseline
-cp test/draw_pixel/single_pixel.png test/draw_pixel/single_pixel.expected.png
+cp test/draw_pixel/single_pixel.png test/draw_pixel/expected/single_pixel.png
 
 # or promote all baselines for a test group
-cd test/draw_rect && for f in *.png; do cp "$f" "${f%.png}.expected.png"; done
+cp test/draw_rect/*.png test/draw_rect/expected/
 ```
 
 Then re-run tests to confirm they pass.
@@ -118,4 +121,4 @@ Then re-run tests to confirm they pass.
 1. Add a new function in the relevant `main.c` (e.g. `test/draw_pixel/main.c`).
 2. Add an entry to the `tests[]` array.
 3. Run the tests — dune will regenerate `dune.inc` automatically.
-4. Inspect the generated `.png`, then copy it to `.expected.png`.
+4. Inspect the generated `.png`, then copy it to `expected/`.

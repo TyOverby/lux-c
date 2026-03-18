@@ -11,25 +11,25 @@
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" single_pixel.expected.png single_pixel.png)
+ (deps "../imgdiff.sh" expected/single_pixel.png single_pixel.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" corners.expected.png corners.png)
+ (deps "../imgdiff.sh" expected/corners.png corners.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" alpha_blend.expected.png alpha_blend.png)
+ (deps "../imgdiff.sh" expected/alpha_blend.png alpha_blend.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" scatter.expected.png scatter.png)
+ (deps "../imgdiff.sh" expected/scatter.png scatter.png)
  (action
   (bash "%{deps}")))
 

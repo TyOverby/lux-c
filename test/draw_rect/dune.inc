@@ -12,31 +12,31 @@
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" single_rect.expected.png single_rect.png)
+ (deps "../imgdiff.sh" expected/single_rect.png single_rect.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" overlapping.expected.png overlapping.png)
+ (deps "../imgdiff.sh" expected/overlapping.png overlapping.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" alpha_rects.expected.png alpha_rects.png)
+ (deps "../imgdiff.sh" expected/alpha_rects.png alpha_rects.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" full_canvas.expected.png full_canvas.png)
+ (deps "../imgdiff.sh" expected/full_canvas.png full_canvas.png)
  (action
   (bash "%{deps}")))
 
 (rule
  (alias runtest)
- (deps "../imgdiff.sh" nested.expected.png nested.png)
+ (deps "../imgdiff.sh" expected/nested.png nested.png)
  (action
   (bash "%{deps}")))
 

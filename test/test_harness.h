@@ -31,7 +31,7 @@ static void generate_dune(const test_case* tests, int count) {
     printf(
         "(rule\n"
         " (alias runtest)\n"
-        " (deps \"../imgdiff.sh\" %s.expected.png %s.png)\n"
+        " (deps \"../imgdiff.sh\" expected/%s.png %s.png)\n"
         " (action\n"
         "  (bash \"%%{deps}\")))\n\n",
         tests[i].name, tests[i].name);
