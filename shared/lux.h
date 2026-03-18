@@ -22,11 +22,10 @@ size_t lux_push_pixel(lux_instruction_buffer*, int32_t x, int32_t y, lux_color c
 
 // Pushes a rectangle to be drawn to the instruction buffer.  Returns `0` if the buffer can't grow to fit the new
 // instruction, non-zero otherwise.
-size_t lux_push_rect(lux_instruction_buffer*, int32_t x, int32_t y, uint32_t w, uint32_t h, lux_color color);
+size_t lux_push_rect(lux_instruction_buffer*, int32_t x, int32_t y, int32_t w, int32_t h, lux_color color);
 
 typedef struct {
-  int32_t dx, dy;
-  uint32_t width, height;
+  int32_t dx, dy, width, height;
 } lux_dispatch_args;
 
 // Dispatches the instruction buffer to the scene and fills in the pixel buffer.

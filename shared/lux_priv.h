@@ -27,8 +27,7 @@ typedef struct {
 } lux_instr_pixel;
 
 typedef struct {
-  int32_t x, y;
-  uint32_t w, h;
+  int32_t x, y, w, h;
   lux_color color;
 } lux_instr_rect;
 

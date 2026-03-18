@@ -45,20 +45,25 @@ size_t lux_priv_push_instruction(lux_instruction_buffer* buffer, lux_instruction
   return index;
 }
 
+size_t lux_push_noop(lux_instruction_buffer* buffer) {
+  return lux_priv_push_instruction(
+      buffer, (lux_instruction){.kind = NoOp, .data = (lux_instruction_data){.NoOp.for_alignment = 0}});
+}
+
 size_t lux_push_pixel(lux_instruction_buffer* buffer, int32_t x, int32_t y, lux_color color) {
   lux_instruction_data data = (lux_instruction_data){.Pixel.x = x, .Pixel.y = y, .Pixel.color = color};
   return lux_priv_push_instruction(buffer, (lux_instruction){.kind = Pixel, .data = data});
 }
 
-size_t lux_push_rect(lux_instruction_buffer* buffer, int32_t x, int32_t y, uint32_t w, uint32_t h, lux_color color) {
+size_t lux_push_rect(lux_instruction_buffer* buffer, int32_t x, int32_t y, int32_t w, int32_t h, lux_color color) {
+  // don't allow rects with no area in the buffer
+  if (w <= 0 || h <= 0) {
+    return lux_push_noop(buffer);
+  }
+
   lux_instruction_data data =
       (lux_instruction_data){.Rect.x = x, .Rect.y = y, .Rect.w = w, .Rect.h = h, .Rect.color = color};
   return lux_priv_push_instruction(buffer, (lux_instruction){.kind = Rect, .data = data});
-}
-
-size_t lux_push_noop(lux_instruction_buffer* buffer) {
-  return lux_priv_push_instruction(
-      buffer, (lux_instruction){.kind = NoOp, .data = (lux_instruction_data){.NoOp.for_alignment = 0}});
 }
 
 lux_instruction_buffer* lux_priv_create_instruction_buffer(size_t capacity) {

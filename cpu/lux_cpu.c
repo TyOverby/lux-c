@@ -45,12 +45,12 @@ lux_scene* lux_cpu_create_scene(void) {
   return scene;
 }
 
-static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width, uint32_t height, lux_color color) {
-  if (x >= 0 && x < (int32_t)width && y >= 0 && y < (int32_t)height) {
+static void write_pixel(lux_color* output, int32_t x, int32_t y, int32_t width, int32_t height, lux_color color) {
+  if (x >= 0 && x < width && y >= 0 && y < height) {
     if (color.a == 255) {
-      output[(size_t)y * width + (size_t)x] = color;
+      output[(size_t)y * (size_t)width + (size_t)x] = color;
     } else {
-      lux_color dst = output[(size_t)y * width + (size_t)x];
+      lux_color dst = output[(size_t)y * (size_t)width + (size_t)x];
       uint32_t src_a = color.a;
       uint32_t dst_a = dst.a;
       uint32_t inv_src_a = 255 - src_a;
@@ -66,7 +66,7 @@ static void write_pixel(lux_color* output, int32_t x, int32_t y, uint32_t width,
         out.a = (uint8_t)out_a;
       }
 
-      output[(size_t)y * width + (size_t)x] = out;
+      output[(size_t)y * (size_t)width + (size_t)x] = out;
     }
   }
 }
@@ -81,36 +81,40 @@ static void draw_rect(lux_instr_rect instr, lux_dispatch_args args, lux_color* o
   // TODO: bail out of these loops early if remainder of row or columns is out of bounds.
   int32_t sx = instr.x - args.dx;
   int32_t sy = instr.y - args.dy;
-  uint32_t w = instr.w;
-  uint32_t h = instr.h;
+  int32_t w = instr.w;
+  int32_t h = instr.h;
 
-  if (sx + (int32_t)w < 0 || sy + (int32_t)h < 0 || sx > (int32_t)args.width || sy > (int32_t)args.height) {
+  if (sx + w < 0 || sy + h < 0 || sx > args.width || sy > args.height) {
     return;
   }
 
   if (sx < 0) {
-    w = w - (uint32_t)(-sx);
+    w = w + sx;
     sx = 0;
   }
   if (sy < 0) {
-    h = h - (uint32_t)(-sy);
+    h = h + sy;
     sy = 0;
   }
 
-  for (uint32_t y = (uint32_t)sy; y < (uint32_t)sy + h; y++) {
-    for (uint32_t x = (uint32_t)sx; x < (uint32_t)sx + w; x++) {
-      write_pixel(output, (int32_t)x, (int32_t)y, args.width, args.height, instr.color);
+  for (int32_t y = sy; y < sy + h; y++) {
+    for (int32_t x = sx; x < sx + w; x++) {
+      write_pixel(output, x, y, args.width, args.height, instr.color);
     }
   }
 }
 
 static void dispatch(lux_scene* scene, lux_dispatch_args args, lux_color* output) {
+  if (args.width <= 0 || args.height <= 0) {
+    return;
+  }
+
   lux_cpu_scene* cpu_scene = scene->data;
   lux_instruction_buffer* buffer = cpu_scene->buffer;
 
   // Clear output buffer
-  for (uint32_t y = 0; y < args.height; y++) {
-    for (uint32_t x = 0; x < args.width; x++) {
+  for (int32_t y = 0; y < args.height; y++) {
+    for (int32_t x = 0; x < args.width; x++) {
       output[y * args.width + x] = (lux_color){0, 0, 0, 0};
     }
   }

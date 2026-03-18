@@ -72,7 +72,7 @@ static void generate_dune_comparisons(const test_case* tests, int count) {
   }
 }
 
-static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t height, int write_images) {
+static int run_tests(const test_case* tests, int count, int32_t width, int32_t height, int write_images) {
   int failures = 0;
   for (int i = 0; i < count; i++) {
     lux_scene* scene = lux_cpu_create_scene();
@@ -80,7 +80,7 @@ static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t
 
     tests[i].fn(buf);
 
-    lux_color* output = malloc(width * height * sizeof(lux_color));
+    lux_color* output = malloc((size_t)(width * height) * sizeof(lux_color));
     lux_dispatch(scene, (lux_dispatch_args){.dx = 0, .dy = 0, .width = width, .height = height}, output);
 
     switch (tests[i].type) {
@@ -88,14 +88,14 @@ static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t
         if (write_images) {
           char filename[256];
           snprintf(filename, sizeof(filename), "%s.png", tests[i].name);
-          stbi_write_png(filename, (int)width, (int)height, 4, output, (int)(width * sizeof(lux_color)));
+          stbi_write_png(filename, (int)width, (int)height, 4, output, (width * (int)sizeof(lux_color)));
         }
         break;
       case TEST_FULLY_TRANSPARENT: {
         lux_color zero = {0, 0, 0, 0};
-        for (uint32_t j = 0; j < width * height; j++) {
+        for (int32_t j = 0; j < width * height; j++) {
           if (memcmp(&output[j], &zero, sizeof(lux_color)) != 0) {
-            fprintf(stderr, "FAIL: %s — pixel %u is (%u,%u,%u,%u), expected (0,0,0,0)\n", tests[i].name, j, output[j].r,
+            fprintf(stderr, "FAIL: %s — pixel %d is (%u,%u,%u,%u), expected (0,0,0,0)\n", tests[i].name, j, output[j].r,
                     output[j].g, output[j].b, output[j].a);
             failures++;
             break;
@@ -113,7 +113,7 @@ static int run_tests(const test_case* tests, int count, uint32_t width, uint32_t
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-function"
-static int test_main(const test_case* tests, int count, uint32_t width, uint32_t height, int argc, char** argv) {
+static int test_main(const test_case* tests, int count, int32_t width, int32_t height, int argc, char** argv) {
   if (argc > 1 && strcmp(argv[1], "--generate-targets") == 0) {
     generate_dune_targets(tests, count);
     return 0;
