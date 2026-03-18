@@ -1,0 +1,14 @@
+---
+If:
+  PathMatch: gpu/.*
+Diagnostics:
+  Suppress: "*"
+CompileFlags:
+  Add: [-Wno-everything]
+---
+If:
+  PathMatch: utilities/.*
+Diagnostics:
+  Suppress: "*"
+CompileFlags:
+  Add: [-Wno-everything, -ferror-limit=0]
